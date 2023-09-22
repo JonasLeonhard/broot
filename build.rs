@@ -4,9 +4,12 @@
 //! Note: to see the eprintln messages, run cargo with
 //!     cargo -vv build --release
 use {
+    syntect::dumps,
+    syntect::highlighting::ThemeSet,
     clap::CommandFactory,
     clap_complete::{Generator, Shell},
     std::{
+        path::Path,
         env,
         ffi::OsStr,
     },
@@ -57,7 +60,14 @@ fn build_man_page() -> std::io::Result<()> {
     Ok(())
 }
 
+fn build_themes() {
+    let theme_set = ThemeSet::load_from_folder("resources/syntect/themes").unwrap();
+    let dump_file = Path::new("resources/syntect/syntect.themedump");
+    dumps::dump_to_file(&theme_set, dump_file).unwrap();
+}
+
 fn main() -> std::io::Result<()> {
+    build_themes();
     build_completion_scripts();
     if BUILD_MAN_PAGE {
         build_man_page()?;

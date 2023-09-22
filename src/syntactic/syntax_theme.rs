@@ -4,9 +4,7 @@
 //!  https://docs.rs/syntect/latest/syntect/highlighting/struct.ThemeSet.html
 
 use {
-    crate::{
-        errors::ConfError,
-    },
+    crate::errors::ConfError,
     serde::{Deserialize, Deserializer},
     std::str::FromStr,
 };
@@ -68,14 +66,18 @@ Themes! {
     MochaDark: "base16-mocha.dark",
     OceanDark: "base16-ocean.dark",
     OceanLight: "base16-ocean.light",
+    CatppuccinFrappe: "Catppuccin-frappe",
+    CatppuccinMacchiato: "Catppuccin-macchiato",
+    CatppuccinMocha: "Catppuccin-mocha",
+    CatppuccinLatte: "Catppuccin-latte",
 }
 
 impl<'de> Deserialize<'de> for SyntaxTheme {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de>
+    where
+        D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
         FromStr::from_str(&s).map_err(serde::de::Error::custom)
     }
 }
-

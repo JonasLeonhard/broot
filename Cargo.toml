@@ -81,6 +81,7 @@ is_executable = "1.0.1"
 clap = { version = "4.4", features = ["derive", "cargo"] }
 clap_complete = "4.4"
 clap_mangen = "0.2.12"
+syntect = { package = "syntect-no-panic", version = "4.6.1" } # see issue #485
 
 [profile.dev]
 debug = false
