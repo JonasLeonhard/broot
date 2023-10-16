@@ -490,6 +490,9 @@ pub trait PanelState {
                     CmdResult::Keep
                 }
             }
+            Internal::escape => {
+                CmdResult::HandleInApp(Internal::escape)
+            }
             Internal::panel_left | Internal::panel_left_no_open => {
                 CmdResult::HandleInApp(Internal::panel_left_no_open)
             }
@@ -749,11 +752,11 @@ pub trait PanelState {
                 }
             }
             Command::VerbTrigger {
-                index,
+                verb_id,
                 input_invocation,
             } => self.execute_verb(
                 w,
-                &con.verb_store.verbs[*index],
+                con.verb_store.verb(*verb_id),
                 input_invocation.as_ref(),
                 TriggerType::Other,
                 app_state,
@@ -912,6 +915,7 @@ pub trait PanelState {
         &self,
         _has_previous_state: bool,
         _con: &AppContext,
+        _width: usize, // available width
     ) -> Status {
         Status::from_message(
             "Hit *esc* to get back, or a space to start a verb"
@@ -923,10 +927,11 @@ pub trait PanelState {
         app_state: &AppState,
         cc: &CmdContext,
         has_previous_state: bool,
+        width: usize,
     ) -> Status {
         info!("get_status cc.cmd={:?}", &cc.cmd);
         match &cc.cmd {
-            Command::PatternEdit { .. } => self.no_verb_status(has_previous_state, cc.app.con),
+            Command::PatternEdit { .. } => self.no_verb_status(has_previous_state, cc.app.con, width),
             Command::VerbEdit(invocation) | Command::VerbTrigger { input_invocation: Some(invocation), .. } => {
                 if invocation.name.is_empty() {
                     Status::new(
@@ -959,7 +964,7 @@ pub trait PanelState {
                     }
                 }
             }
-            _ => self.no_verb_status(has_previous_state, cc.app.con),
+            _ => self.no_verb_status(has_previous_state, cc.app.con, width),
         }
     }
 

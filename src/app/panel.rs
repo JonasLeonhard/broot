@@ -30,7 +30,7 @@ pub struct Panel {
     pub areas: Areas,
     status: Status,
     pub purpose: PanelPurpose,
-    input: PanelInput,
+    pub input: PanelInput,
 }
 
 impl Panel {
@@ -43,7 +43,7 @@ impl Panel {
     ) -> Self {
         let mut input = PanelInput::new(areas.input.clone());
         input.set_content(&state.get_starting_input());
-        let status = state.no_verb_status(false, con);
+        let status = state.no_verb_status(false, con, areas.status.width as usize);
         Self {
             id,
             states: vec![state],
@@ -82,7 +82,7 @@ impl Panel {
         };
         let result = self.states[state_idx].on_command(w, app_state, &cc);
         let has_previous_state = self.states.len() > 1;
-        self.status = self.state().get_status(app_state, &cc, has_previous_state);
+        self.status = self.state().get_status(app_state, &cc, has_previous_state, self.areas.status.width as usize);
         result
     }
 
@@ -103,7 +103,7 @@ impl Panel {
             },
         };
         let has_previous_state = self.states.len() > 1;
-        self.status = self.state().get_status(app_state, &cc, has_previous_state);
+        self.status = self.state().get_status(app_state, &cc, has_previous_state, self.areas.status.width as usize);
     }
 
     /// do the next pending task stopping as soon as there's an event
@@ -251,7 +251,7 @@ impl Panel {
         if let Some(area) = &self.areas.purpose {
             let shortcut = con
                 .verb_store
-                .verbs
+                .verbs()
                 .iter()
                 .filter(|v| match &v.execution {
                     VerbExecution::Internal(exec) => exec.internal == Internal::start_end_panel,
