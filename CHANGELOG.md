@@ -1,6 +1,7 @@
 ### next
 
 - small breaking change: `:stage_all_files` now stages also symlinks - Fix #606
+- new `{git-root}` verb argument - Fix 760 - Thanks @9999years
 
 ### v1.26.1 - 2023-09-30
 
