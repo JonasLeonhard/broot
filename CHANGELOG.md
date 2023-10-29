@@ -1,7 +1,10 @@
-### next
-
+### v1.27.0 - 2023-1029
+<a name="v1.27.0"></a>
+- the `apply_to` verb filter accepts new values: `text_file` and `binary_file`. Broot users editing files in their terminal (vi, emacs, etc.) should configure broot to open their text editor on `enter`: see https://dystroy.org/broot/tricks/#change-standard-file-opening
 - small breaking change: `:stage_all_files` now stages also symlinks - Fix #606
 - new `{git-root}` verb argument - Fix 760 - Thanks @9999years
+- fix a freeze on windows when launching a search with `-c` - Thanks @3tilley
+- fix automatic preview pattern not escaping spaces and colons - Fix #778
 
 ### v1.26.1 - 2023-09-30
 
