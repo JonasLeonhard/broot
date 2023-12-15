@@ -268,6 +268,7 @@ impl VerbStore {
         self.add_internal(open_staging_area).with_shortcut("osa");
         self.add_internal(close_staging_area).with_shortcut("csa");
         self.add_internal(toggle_staging_area).with_shortcut("tsa");
+        self.add_internal(toggle_tree).with_shortcut("tree");
         self.add_internal(sort_by_count).with_shortcut("sc");
         self.add_internal(sort_by_date).with_shortcut("sd");
         self.add_internal(sort_by_size).with_shortcut("ss");
@@ -297,6 +298,7 @@ impl VerbStore {
         self.add_internal(toggle_perm).with_shortcut("perm");
         self.add_internal(toggle_sizes).with_shortcut("sizes");
         self.add_internal(toggle_trim_root);
+        self.add_internal(trash);
         self.add_internal(total_search).with_key(key!(ctrl-s));
         self.add_internal(up_tree).with_shortcut("up");
     }

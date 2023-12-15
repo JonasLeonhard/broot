@@ -2,7 +2,7 @@ use {
     super::*,
     crate::{
         cli::{Args, TriBool},
-        conf::Conf,
+        conf::*,
         content_search,
         errors::*,
         file_sum,
@@ -12,7 +12,7 @@ use {
         skin::ExtColorMap,
         syntactic::SyntaxTheme,
         tree::TreeOptions,
-        verb::VerbStore,
+        verb::*,
     },
     std::{
         convert::{TryFrom, TryInto},
@@ -40,6 +40,10 @@ pub struct AppContext {
 
     /// all the arguments specified at launch
     pub launch_args: Args,
+
+    /// the "launch arguments" found in the default_flags
+    /// of the config file(s)
+    pub config_default_args: Option<Args>,
 
     /// the verbs in use (builtins and configured ones)
     pub verb_store: VerbStore,
@@ -93,6 +97,10 @@ pub struct AppContext {
 
     /// max file size when searching file content
     pub content_search_max_file_size: usize,
+
+    /// the optional pattern used to change the terminal's title
+    /// (if none, the title isn't modified)
+    pub terminal_title_pattern: Option<ExecPattern>,
 }
 
 impl AppContext {
@@ -101,6 +109,11 @@ impl AppContext {
         verb_store: VerbStore,
         config: &Conf,
     ) -> Result<Self, ProgramError> {
+        let config_default_args = config
+            .default_flags
+            .as_ref()
+            .map(|flags| parse_default_flags(flags))
+            .transpose()?;
         let config_paths = config.files.clone();
         let standard_status = StandardStatus::new(&verb_store);
         let true_colors = if let Some(value) = config.true_colors {
@@ -143,9 +156,12 @@ impl AppContext {
 
         // tree options are built from the default_flags
         // found in the config file(s) (if any) then overridden
-        // by the cli args
+        // by the cli args (order is important)
         let mut initial_tree_options = TreeOptions::default();
         initial_tree_options.apply_config(config)?;
+        if let Some(args) = &config_default_args {
+            initial_tree_options.apply_launch_args(args);
+        }
         initial_tree_options.apply_launch_args(&launch_args);
         if launch_args.color == TriBool::No {
             initial_tree_options.show_selection_mark = true;
@@ -155,12 +171,15 @@ impl AppContext {
             .map(|u64value| usize::try_from(u64value).unwrap_or(usize::MAX))
             .unwrap_or(content_search::DEFAULT_MAX_FILE_SIZE);
 
+        let terminal_title_pattern = config.terminal_title.clone();
+
         Ok(Self {
             initial_root,
             initial_file,
             initial_tree_options,
             config_paths,
             launch_args,
+            config_default_args,
             verb_store,
             special_paths,
             search_modes,
@@ -177,7 +196,15 @@ impl AppContext {
             file_sum_threads_count,
             max_staged_count,
             content_search_max_file_size,
+            terminal_title_pattern,
         })
+    }
+    /// Return the --cmd argument, coming from the launch arguments (prefered)
+    /// or from the default_flags parameter of a config file
+    pub fn cmd(&self) -> Option<&str> {
+        self.launch_args.cmd.as_ref().or(
+            self.config_default_args.as_ref().and_then(|args| args.cmd.as_ref())
+        ).map(|s| s.as_str())
     }
 }
 

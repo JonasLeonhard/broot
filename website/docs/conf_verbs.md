@@ -272,6 +272,8 @@ Then,
 
 Beware that consoles intercept some possible keys. Many keyboard shortcuts aren't available, depending on your configuration. Some keys are also reserved in broot for some uses, for example the <kbd>enter</kbd> key always validate an input command if there's some. The <kbd>Tab</kbd>, <kbd>delete</kbd>, <kbd>backspace</kbd>, <kbd>esc</kbd> keys are reserved too.
 
+If your chosen key doesn't seem to work, see [Key Combination Problem](../common-problems/#key-combination-problem).
+
 ## Verbs not leaving broot
 
 If you set `leave_broot = false`, broot won't quit when executing your command, but it will update the tree.
@@ -301,6 +303,7 @@ name | expanded to
 `{other-panel-directory}` | closest directory, either `{file}` or `{parent}` in the other panel
 `{root}` | current tree root (top of the displayed files tree)
 `{git-root}` | The working directory of the Git repository containing the current selection
+`{git-name}` | Name of the working directory of the current Git repository
 
 !!!	Note
 	when you're in the help screen, `{file}` is the configuration file, while `{directory}` is the configuration directory.
@@ -444,6 +447,7 @@ invocation | default key | default shortcut | behavior / details
 :toggle_stage | <kbd>ctrl</kbd><kbd>g</kbd> | - | add or remove selection to staging area
 :toggle_staging_area | - | tsa | open/close the staging area panel
 :toggle_trim_root | - | - | toggle trimming of top level files in tree display
+:toggle_tree | - | - | toggle showing only one level of the tree (when not affected by sorting)
 :unstage | <kbd>-</kbd> | - | remove selection from staging area
 :up_tree | - | - | focus the parent of the current root
 

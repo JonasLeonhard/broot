@@ -78,7 +78,8 @@ Starting from version 1.14, the default configuration is released in several fil
 
 # Default flags
 
-Broot accepts a few flags at launch (the complete list is available with `broot --help`.
+Broot accepts a few flags at launch (the complete list is available with `broot --help`).
+The `default_flags` entry lets you specify them in configuration, with the same syntax.
 
 For example, if you want to see hidden files (the ones whose name starts with a dot) and the status of files related to git, you launch broot with
 
@@ -87,13 +88,13 @@ For example, if you want to see hidden files (the ones whose name starts with a 
 If you almost always want those flags, you may define them as default in the configuration file file, with the `default_flags` setting.
 
 ```Hjson
-default_flags: gh
+default_flags: -gh
 ```
 ```TOML
-default_flags = "gh"
+default_flags = "-gh"
 ```
 
-Those flags can still be overridden at launch with the negating ones. For example if you don't want to see hidden files at a specific launch, do
+Those flags can still be overridden at launch with the negating ones. For example, with the above `default_flags`, if you don't want to see hidden files on a specific launch, do
 
     br -H
 
@@ -242,6 +243,20 @@ syntax_theme = "OceanLight"
 ```
 
 Those themes come from [syntect](https://github.com/trishume/syntect) and are bundled in broot.
+
+
+# Terminal title
+
+If you set the `terminal_title` parameter, broot will change the title of the terminal when the current tree root changes.
+
+The pattern allows using the same arguments than verb execution patterns, eg {file} or {git-name}.
+
+```Hjson
+terminal_title: "{file} 🐄"
+```
+```TOML
+terminal_title = "{file} 🐄"
+```
 
 # Miscellaneous
 

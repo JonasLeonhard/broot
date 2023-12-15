@@ -1,4 +1,27 @@
-### v1.27.0 - 2023-1029
+### v1.30.0 - 2023-12-03
+<a name="v1.30.0"></a>
+- `:trash` internal - I'd like feedback on this one - Fix #799
+- solve symlinks on `:panel_right` to display the dest path and the dest filesystem - Fix #804
+- `:panel_right` on a directory now removes the filter
+- more '~' expansion in verb arguments
+
+### v1.29.0 - 2023-11-22
+<a name="v1.29.0"></a>
+- `terminal_title` option in configuration - Fix #794
+- `:toggle_tree` internal and `--tree` and `--no-tree` launch flags (experimental, feedback welcome) - Fix #670 - Thanks @eldad
+- `{git-name}` verb argument
+
+### v1.28.1 - 2023-11-13
+<a name="v1.28.1"></a>
+- fix a regression in handling of rooted gitignore patterns - Fix #795
+
+### v1.28.0 - 2023-11-12
+<a name="v1.28.0"></a>
+- left and right keys bound to verbs can be used when the input isn't empty, if they would have no effect to the input
+- default_flags now accept long parameters, including --cmd - Fix #790
+- gitignore: fix relative patterns with several tokens - Fix #782
+
+### v1.27.0 - 2023-10-29
 <a name="v1.27.0"></a>
 - the `apply_to` verb filter accepts new values: `text_file` and `binary_file`. Broot users editing files in their terminal (vi, emacs, etc.) should configure broot to open their text editor on `enter`: see https://dystroy.org/broot/tricks/#change-standard-file-opening
 - small breaking change: `:stage_all_files` now stages also symlinks - Fix #606

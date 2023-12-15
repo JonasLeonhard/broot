@@ -7,11 +7,15 @@ use {
         command::TriggerType,
         display::Screen,
         path::{self, PathAnchor},
+        pattern::InputPattern,
         preview::PreviewState,
         task_sync::Dam,
         tree::TreeOptions,
     },
-    std::path::{Path, PathBuf},
+    std::{
+        fs,
+        path::{Path, PathBuf},
+    },
 };
 
 pub fn on_path(
@@ -50,13 +54,19 @@ pub fn new_state_on_path(
 }
 
 pub fn new_panel_on_path(
-    path: PathBuf,
+    mut path: PathBuf,
     screen: Screen,
-    tree_options: TreeOptions,
+    mut tree_options: TreeOptions,
     purpose: PanelPurpose,
     con: &AppContext,
     direction: HDir,
 ) -> CmdResult {
+    // We try to canonicalize the path, mostly to resolve links
+    if let Ok(canonic) = fs::canonicalize(&path) {
+        path = canonic;
+        // If it can't be canonicalized, we'll let the panel state
+        // deal with the original path
+    }
     if purpose.is_preview() {
         let pattern = tree_options.pattern.tree_to_preview();
         CmdResult::NewPanel {
@@ -66,6 +76,9 @@ pub fn new_panel_on_path(
         }
     } else {
         let path = path::closest_dir(&path);
+        // We remove the pattern on opening another browser. This will probably
+        // be configuratble with a clear_pattern verb option in the future
+        tree_options.pattern = InputPattern::none();
         match BrowserState::new(path, tree_options, screen, con, &Dam::unlimited()) {
             Ok(os) => CmdResult::NewPanel {
                 state: Box::new(os),
@@ -135,7 +148,6 @@ fn path_from_input(
             base_path.to_path_buf()
         }
     }
-
 }
 
 pub fn get_status_markdown(
